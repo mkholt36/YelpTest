@@ -18,9 +18,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private String mYelpResponse;
 
 
 
@@ -28,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //ButterKnife.inject(this);  Use butterknife to add data to textview
 
-        // MANDELL
-        String apiKey = "[OkHCf4HExwOWu_BTa2P3QLyOEOeWMj040H2u7Fgi-d7m-CYyPyEoaet-QKfRgFJy_Ai31KNdKu_ke25XEy6dzAb6fu-A9cNn8RwftomjYE-xbgy9XoSk_BVmXiTEWXYx]";
+
+
+
         String term = "restuarant";
         double latitude = 40.015;
         double longitude = -105.271;
@@ -48,53 +49,6 @@ public class MainActivity extends AppCompatActivity {
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
 
-            public ArrayList<YelpResponse> processResults(Response response){
-                Log.d(TAG, "arraylist");
-                ArrayList<YelpResponse> restaurants = new ArrayList<>();
-                try{
-
-                    String jsonData = response.body().string();
-                    JSONObject yelpJSON = new JSONObject(jsonData);
-                    JSONArray businessesJSON = yelpJSON.getJSONArray("businesses");
-                    for (int i = 0; i < businessesJSON.length(); i++) {
-                        JSONObject restaurantJSON = businessesJSON.getJSONObject(i);
-                        String name = restaurantJSON.getString("name");
-                        Log.d(TAG, name);
-                        String phone = restaurantJSON.optString("display_phone", "Phone not available");
-                        String website = restaurantJSON.getString("url");
-                        double rating = restaurantJSON.getDouble("rating");
-
-                        String imageUrl = restaurantJSON.getString("image_url");
-
-                        double latitude = (double) restaurantJSON.getJSONObject("coordinates").getDouble("latitude");
-
-                        double longitude = (double) restaurantJSON.getJSONObject("coordinates").getDouble("longitude");
-
-                        ArrayList<String> address = new ArrayList<>();
-                        JSONArray addressJSON = restaurantJSON.getJSONObject("location")
-                                .getJSONArray("display_address");
-                        for (int y = 0; y < addressJSON.length(); y++) {
-                            address.add(addressJSON.get(y).toString());
-                        }
-
-                        ArrayList<String> categories = new ArrayList<>();
-                        JSONArray categoriesJSON = restaurantJSON.getJSONArray("categories");
-
-                        for (int y = 0; y < categoriesJSON.length(); y++) {
-                            categories.add(categoriesJSON.getJSONObject(y).getString("title"));
-                        }
-                        YelpResponse restaurant = new YelpResponse(name, phone, website, rating,
-                                imageUrl, address, latitude, longitude, categories);
-                        restaurants.add(restaurant);
-                    }
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                return restaurants;
-
-            }
 
 
 
@@ -106,12 +60,26 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                Log.v(TAG, response.body().string());
-                if(response.isSuccessful()){
-                    Log.d(TAG, yelpUrl);
+                try {
+                    String jsonData = response.body().string();
+                    Log.v(TAG, "THIS IS MY JSONDATA " + jsonData);
 
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, yelpUrl);
+                        //mYelpResponse = getCurrentDetails(jsonData);
+                        getCurrentDetails(jsonData);
 
+                        Log.v(TAG, jsonData);
+
+                    }
                 }
+                catch (IOException e) {
+                    Log.e(TAG, "Exception caught: ", e);
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
+
 
 
             }
@@ -119,6 +87,58 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "Main UI code is running!");
 
+    }
+
+    private void getCurrentDetails(String jsonData) throws JSONException {
+
+
+        JSONObject yelpJSON = new JSONObject(jsonData);
+        JSONArray businessesJSON = yelpJSON.getJSONArray("businesses");
+        for (int i = 0; i < businessesJSON.length(); i++) {
+            JSONObject restaurantJSON = businessesJSON.getJSONObject(i);
+            String name = restaurantJSON.getString("name");
+            String phone = restaurantJSON.optString("display_phone", "Phone not available");
+            String website = restaurantJSON.getString("url");
+            double rating = restaurantJSON.getDouble("rating");
+
+            String imageUrl = restaurantJSON.getString("image_url");
+
+            double latitude = (double) restaurantJSON.getJSONObject("coordinates").getDouble("latitude");
+
+            double longitude = (double) restaurantJSON.getJSONObject("coordinates").getDouble("longitude");
+
+            ArrayList<String> address = new ArrayList<>();
+            JSONArray addressJSON = restaurantJSON.getJSONObject("location")
+                    .getJSONArray("display_address");
+            for (int y = 0; y < addressJSON.length(); y++) {
+                address.add(addressJSON.get(y).toString());
+            }
+
+            ArrayList<String> categories = new ArrayList<>();
+            JSONArray categoriesJSON = restaurantJSON.getJSONArray("categories");
+
+            for (int y = 0; y < categoriesJSON.length(); y++) {
+                categories.add(categoriesJSON.getJSONObject(y).getString("title"));
+            }
+
+            Log.d(TAG, name);
+            Log.d(TAG, phone);
+            Log.d(TAG, website);
+            Log.d(TAG, String.valueOf(rating));
+            Log.d(TAG, imageUrl);
+            Log.d(TAG, String.valueOf(latitude));
+            Log.d(TAG, String.valueOf(longitude));
+            Log.d(TAG, String.valueOf(address));
+            Log.d(TAG, String.valueOf(categories));
+
+
+
+        }
+
+
+
+
+        //return new YelpResponse();
     }
 
 

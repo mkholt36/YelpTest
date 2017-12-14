@@ -17,9 +17,9 @@ public class YelpResponse {
     private double longitude;
     private ArrayList<String> categories = new ArrayList<>();
 
-    public YelpResponse(String name, String phone, String website,
-                      double rating, String imageUrl, ArrayList<String> address,
-                      double latitude, double longitude, ArrayList<String> categories) {
+public YelpResponse(String name, String phone, String website, double rating, String imageUrl,
+                    ArrayList<String> address, double latitude, double longitude,
+                    ArrayList<String> categories){
         this.name = name;
         this.phone = phone;
         this.website = website;
@@ -30,7 +30,6 @@ public class YelpResponse {
         this.longitude = longitude;
         this.categories = categories;
     }
-
     public String getName() {
         return name;
     }
@@ -66,4 +65,5 @@ public class YelpResponse {
     public ArrayList<String> getCategories() {
         return categories;
     }
+
 }
