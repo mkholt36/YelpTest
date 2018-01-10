@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
+
     private String mYelpResponse;
 
 
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -94,12 +96,15 @@ public class MainActivity extends AppCompatActivity {
 
         JSONObject yelpJSON = new JSONObject(jsonData);
         JSONArray businessesJSON = yelpJSON.getJSONArray("businesses");
+        Restaurant[] restaurants  = new Restaurant[businessesJSON.length()];
         for (int i = 0; i < businessesJSON.length(); i++) {
             JSONObject restaurantJSON = businessesJSON.getJSONObject(i);
+
             String name = restaurantJSON.getString("name");
             String phone = restaurantJSON.optString("display_phone", "Phone not available");
             String website = restaurantJSON.getString("url");
             double rating = restaurantJSON.getDouble("rating");
+
 
             String imageUrl = restaurantJSON.getString("image_url");
 
@@ -120,26 +125,28 @@ public class MainActivity extends AppCompatActivity {
             for (int y = 0; y < categoriesJSON.length(); y++) {
                 categories.add(categoriesJSON.getJSONObject(y).getString("title"));
             }
-
-            Log.d(TAG, name);
-            Log.d(TAG, phone);
-            Log.d(TAG, website);
-            Log.d(TAG, String.valueOf(rating));
-            Log.d(TAG, imageUrl);
-            Log.d(TAG, String.valueOf(latitude));
-            Log.d(TAG, String.valueOf(longitude));
-            Log.d(TAG, String.valueOf(address));
-            Log.d(TAG, String.valueOf(categories));
-
+            Restaurant restaurant = new Restaurant(name, phone, website, rating, imageUrl,
+                     address, latitude, longitude, categories);
+            restaurants[i] = restaurant;
 
 
         }
+        //loop through restaurants array and print out restaurants[i]
+        for (int i = 0; i < businessesJSON.length(); i++) {
 
+            Log.d(TAG, restaurants[i].getName());
+            Log.d(TAG, restaurants[i].getPhone());
+            Log.d(TAG, restaurants[i].getWebsite());
+            Log.d(TAG, String.valueOf(restaurants[i].getRating()));
+            Log.d(TAG, restaurants[i].getImageUrl());
+            Log.d(TAG, String.valueOf(restaurants[i].getLatitude()));
+            Log.d(TAG, String.valueOf(restaurants[i].getLongitude()));
+            Log.d(TAG, String.valueOf(restaurants[i].getAddress()));
+            Log.d(TAG, String.valueOf(restaurants[i].getCategories()));
+        }
 
-
-
-        //return new YelpResponse();
     }
 
 
 }
+

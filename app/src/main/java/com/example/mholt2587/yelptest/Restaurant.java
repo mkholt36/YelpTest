@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by mholt2587 on 11/6/2017.
  */
 
-public class YelpResponse {
+public class Restaurant {
     private String name;
     private String phone;
     private String website;
@@ -17,7 +17,9 @@ public class YelpResponse {
     private double longitude;
     private ArrayList<String> categories = new ArrayList<>();
 
-public YelpResponse(String name, String phone, String website, double rating, String imageUrl,
+
+
+public Restaurant(String name, String phone, String website, double rating, String imageUrl,
                     ArrayList<String> address, double latitude, double longitude,
                     ArrayList<String> categories){
         this.name = name;
