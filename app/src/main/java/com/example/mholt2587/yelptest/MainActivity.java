@@ -3,6 +3,8 @@ package com.example.mholt2587.yelptest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -17,14 +19,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
-
-    private String mYelpResponse;
-
-
+   private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        mListView = (ListView) findViewById(R.id.list_view);
 
         String term = "restuarant";
         double latitude = 40.015;
@@ -63,13 +61,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response response) throws IOException {
                 try {
-                    String jsonData = response.body().string();
+                    final String jsonData = response.body().string();
                     Log.v(TAG, "THIS IS MY JSONDATA " + jsonData);
 
                     if (response.isSuccessful()) {
                         Log.d(TAG, yelpUrl);
-                        //mYelpResponse = getCurrentDetails(jsonData);
-                        getCurrentDetails(jsonData);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    getCurrentDetails(jsonData);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
 
                         Log.v(TAG, jsonData);
 
@@ -78,9 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 catch (IOException e) {
                     Log.e(TAG, "Exception caught: ", e);
                 }
-                catch(JSONException e){
-                    e.printStackTrace();
-                }
+
 
 
 
@@ -97,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         JSONObject yelpJSON = new JSONObject(jsonData);
         JSONArray businessesJSON = yelpJSON.getJSONArray("businesses");
         Restaurant[] restaurants  = new Restaurant[businessesJSON.length()];
+        String[] nameArray = new String[businessesJSON.length()];
         for (int i = 0; i < businessesJSON.length(); i++) {
             JSONObject restaurantJSON = businessesJSON.getJSONObject(i);
 
@@ -128,10 +134,14 @@ public class MainActivity extends AppCompatActivity {
             Restaurant restaurant = new Restaurant(name, phone, website, rating, imageUrl,
                      address, latitude, longitude, categories);
             restaurants[i] = restaurant;
-
+            nameArray[i] = restaurants[i].getName();
 
         }
-        //loop through restaurants array and print out restaurants[i]
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nameArray);
+        mListView.setAdapter(adapter);
+
+        //loop through restaurants array and print out restaurants[i] to log
         for (int i = 0; i < businessesJSON.length(); i++) {
 
             Log.d(TAG, restaurants[i].getName());
