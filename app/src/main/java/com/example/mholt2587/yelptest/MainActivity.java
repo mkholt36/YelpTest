@@ -3,7 +3,6 @@ package com.example.mholt2587.yelptest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.squareup.okhttp.Call;
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nameArray);
+        RestaurantAdapter adapter = new RestaurantAdapter(this, restaurants);
         mListView.setAdapter(adapter);
 
         //loop through restaurants array and print out restaurants[i] to log
