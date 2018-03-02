@@ -13,4 +13,13 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="?attr/colorBackgroundFloating"/>
+
+    <Button
+        android:id="@+id/getLL"
+        android:layout_width="311dp"
+        android:layout_height="51dp"
+        android:text="get Lati/long"
+        tools:layout_editor_absoluteX="39dp"
+        tools:layout_editor_absoluteY="28dp"
+        tools:ignore="MissingConstraints" />
 </RelativeLayout>
